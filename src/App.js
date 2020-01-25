@@ -1,24 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import moment from 'moment';
+import Week from './Components/Week';
+import Buttons from './Components/Buttons';
 
 function App() {
+  const now = moment().startOf('week');
+  const week = [now];
+  let i = 0;
+  while (week.length < 7) {
+    week.push(moment(now).add(++i, 'day'));
+  }
+
+  const [daysOfWeek, setDaysOfWeek] = useState(week);
+
+  const getNext = () => {
+    let nextWeek = daysOfWeek.map(day => moment(day).add(7, 'days')._d);
+    setDaysOfWeek(nextWeek);
+  };
+
+  const getLast = () => {
+    let nextWeek = daysOfWeek.map(day => moment(day).subtract(7, 'days')._d);
+    setDaysOfWeek(nextWeek);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>This Week</h1>
+      <Week daysOfWeek={daysOfWeek} />
+      <Buttons getNext={getNext} getLast={getLast} />
     </div>
   );
 }
